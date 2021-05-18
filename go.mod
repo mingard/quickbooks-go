@@ -1,6 +1,6 @@
-module github.com/rwestlund/quickbooks-go
+module github.com/mingard/quickbooks-go
 
-go 1.14
+go 1.16
 
 require (
 	github.com/stretchr/testify v1.6.1
