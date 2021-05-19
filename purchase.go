@@ -7,37 +7,34 @@ import (
 	"net/url"
 )
 
-// SalesReceipt represents a QuickBooks SalesReceipt object.
-type SalesReceipt struct {
-	ID                  string        `json:"Id,omitempty"`
-	DocNumber           string        `json:",omitempty"`
-	PaymentRefNum       string        `json:",omitempty"`
-	TotalAmt            json.Number   `json:",omitempty"`
-	TxnDate             Date          `json:",omitempty"`
-	PrintStatus         string        `json:",omitempty"`
-	EmailStatus         string        `json:",omitempty"`
-	PaymentMethodRef    ReferenceType `json:",omitempty"`
-	DepositToAccountRef ReferenceType `json:",omitempty"`
-	// DepartmentRef
-	PrivateNote          string  `json:",omitempty"`
-	CustomerMemo         MemoRef `json:",omitempty"`
-	GlobalTaxCalculation string  `json:",omitempty"`
-	Line                 []Line  `json:",omitempty"`
+// Purchase represents a QuickBooks Purchase object.
+type Purchase struct {
+	ID                   string        `json:"Id,omitempty"`
+	DocNumber            string        `json:",omitempty"`
+	TotalAmt             json.Number   `json:",omitempty"`
+	TxnDate              Date          `json:",omitempty"`
+	PaymentType          string        `json:",omitempty"`
+	PaymentMethodRef     ReferenceType `json:",omitempty"`
+	EntityRef            ReferenceType `json:",omitempty"`
+	AccountRef           ReferenceType `json:",omitempty"`
+	PrivateNote          string        `json:",omitempty"`
+	GlobalTaxCalculation string        `json:",omitempty"`
+	Line                 []Line        `json:",omitempty"`
 }
 
-// CreateSalesReceipt creates the given sales receipt on the QuickBooks server, returning
-// the resulting SalesReceipt object.
-func (c *Client) CreateSalesReceipt(srp *SalesReceipt) (*SalesReceipt, error) {
+// CreatePurchase creates the given Purchase on the QuickBooks server, returning
+// the resulting Purchase object.
+func (c *Client) CreatePurchase(pur *Purchase) (*Purchase, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
 		return nil, err
 	}
-	u.Path = "/v3/company/" + c.RealmID + "/salesreceipt"
+	u.Path = "/v3/company/" + c.RealmID + "/purchase"
 	var v = url.Values{}
 	v.Add("minorversion", minorVersion)
 	u.RawQuery = v.Encode()
 	var j []byte
-	j, err = json.Marshal(srp)
+	j, err = json.Marshal(pur)
 	if err != nil {
 		return nil, err
 	}
@@ -60,11 +57,11 @@ func (c *Client) CreateSalesReceipt(srp *SalesReceipt) (*SalesReceipt, error) {
 	}
 
 	var r struct {
-		SalesReceipt SalesReceipt
-		Time         Date
+		Purchase Purchase
+		Time     Date
 	}
 	err = json.NewDecoder(res.Body).Decode(&r)
-	return &r.SalesReceipt, err
+	return &r.Purchase, err
 }
 
 /*
