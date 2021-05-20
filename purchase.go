@@ -3,6 +3,7 @@ package quickbooks
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 )
@@ -27,6 +28,7 @@ type Purchase struct {
 func (c *Client) CreatePurchase(pur *Purchase) (*Purchase, error) {
 	var u, err = url.Parse(string(c.Endpoint))
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	u.Path = "/v3/company/" + c.RealmID + "/purchase"
